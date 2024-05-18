@@ -5,7 +5,7 @@ import os
 import frame_analysis
 import recommended_pose
 
-video_path = ""
+video_path = "example.mp4"
 
 bike = recommended_pose.RoadBike(recommended_pose.RidingStyle.RACING)
 
