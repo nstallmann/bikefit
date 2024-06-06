@@ -86,18 +86,62 @@ def body_pose_angles(mp_image):
             foot_angle)
 
 
+def draw_landmarks_on_image(rgb_image, detection_result, angle_result):
+  pose_landmarks_list = detection_result.pose_landmarks
+  annotated_image = np.copy(rgb_image)
+  # Loop through the detected poses to visualize.
+  for idx in range(len(pose_landmarks_list)):
+    pose_landmarks = pose_landmarks_list[idx]
+
+    # Draw the pose landmarks.
+    pose_landmarks_proto = landmark_pb2.NormalizedLandmarkList()
+    pose_landmarks_proto.landmark.extend([
+      landmark_pb2.NormalizedLandmark(x=landmark.x, y=landmark.y, z=landmark.z) for landmark in pose_landmarks
+    ])
+    pose_connections = [(0,1), (1,2), (0,3), (3,4), (4,5), (5,6), (6,7)]
+    solutions.drawing_utils.draw_landmarks(
+      annotated_image,
+      pose_landmarks_proto,
+      pose_connections,
+      drawing_style.get_pose_landmarks_style())
+
+    # Legend with corresponding pose angles
+    y_pixels = rgb_image.shape[0]
+    font = 0
+    fontScale = 0.8
+    thickness = 2
+    color = (0,0,0)
+    spacing = y_pixels//20
+    annotated_image = cv2.putText(annotated_image, f"knee angle: {round(angle_result[0], 1)}", (10,1*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
+    annotated_image = cv2.putText(annotated_image, f"torso angle: {round(angle_result[1], 1)}", (10,2*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
+    annotated_image = cv2.putText(annotated_image, f"hip angle: {round(angle_result[2], 1)}", (10,3*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
+    annotated_image = cv2.putText(annotated_image, f"shoulder angle: {round(angle_result[3], 1)}", (10,4*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
+    annotated_image = cv2.putText(annotated_image, f"elbow angle: {round(angle_result[4], 1)}", (10,5*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
+    annotated_image = cv2.putText(annotated_image, f"KOPS angle: {round(angle_result[5], 1)}", (10,6*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
+    annotated_image = cv2.putText(annotated_image, f"foot angle: {round(angle_result[6], 1)}", (10,7*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
+
+    return annotated_image
+
+
 def video_frame_angles(video_file):
     video_base_name = os.path.basename(video_file).split(".")[0]
     if os.path.isfile(os.path.join(video_base_name, "body_angles.npy")):
         return
     Path(video_base_name).mkdir(parents=True, exist_ok=True)
-    frame_path = os.path.join(video_base_name, "frames")
-    video_tools.extract_images(video_file, frame_path)
+    frames_folder_path = os.path.join(video_base_name, "frames")
+    video_tools.extract_images(video_file, frames_folder_path)
 
     angles = []
-    for frame in sorted(os.listdir(frame_path)):
-        image = mp.Image.create_from_file(os.path.join(frame_path, frame))
-        angles.append(body_pose_angles(image))
+    for frame in sorted(os.listdir(frames_folder_path)):
+        frame_path = os.path.join(frames_folder_path, frame)
+        mp_image = mp.Image.create_from_file(frame_path)
+        image_angles = body_pose_angles(mp_image)
+        angles.append(image_angles)
+        ### Annotate frame and save
+        landmarks = grab_landmarks(mp_image)
+        annotated_image = draw_landmarks_on_image(mp_image.numpy_view(), landmarks, image_angles)
+        rgb_image = cv2.cvtColor(annotated_image, cv2.COLOR_BGR2RGB)
+        cv2.imwrite(frame_path, rgb_image)
 
     angles = np.array(angles)
     np.save(f"{os.path.join(video_base_name, 'body_angles')}.npy", angles)
@@ -140,56 +184,9 @@ def bikefit_angles(video):
             [maximum_knee_angle_frame, minimum_knee_angle_frame]]
 
 
-def draw_landmarks_on_image(rgb_image, detection_result, angle_result):
-  pose_landmarks_list = detection_result.pose_landmarks
-  annotated_image = np.copy(rgb_image)
-  # Loop through the detected poses to visualize.
-  for idx in range(len(pose_landmarks_list)):
-    pose_landmarks = pose_landmarks_list[idx]
-
-    # Draw the pose landmarks.
-    pose_landmarks_proto = landmark_pb2.NormalizedLandmarkList()
-    pose_landmarks_proto.landmark.extend([
-      landmark_pb2.NormalizedLandmark(x=landmark.x, y=landmark.y, z=landmark.z) for landmark in pose_landmarks
-    ])
-    pose_connections = [(0,1), (1,2), (0,3), (3,4), (4,5), (5,6), (6,7)]
-    solutions.drawing_utils.draw_landmarks(
-      annotated_image,
-      pose_landmarks_proto,
-      pose_connections,
-      drawing_style.get_pose_landmarks_style())
-
-    # Legend with corresponding pose angles
-    y_pixels = rgb_image.shape[0]
-    font = 0
-    fontScale = 0.8
-    thickness = 2
-    color = (0,0,0)
-    spacing = y_pixels//20
-    annotated_image = cv2.putText(annotated_image, f"knee angle: {round(angle_result[0], 1)}", (10,1*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
-    annotated_image = cv2.putText(annotated_image, f"torso angle: {round(angle_result[1], 1)}", (10,2*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
-    annotated_image = cv2.putText(annotated_image, f"hip angle: {round(angle_result[2], 1)}", (10,3*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
-    annotated_image = cv2.putText(annotated_image, f"shoulder angle: {round(angle_result[3], 1)}", (10,4*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
-    annotated_image = cv2.putText(annotated_image, f"elbow angle: {round(angle_result[4], 1)}", (10,5*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
-    annotated_image = cv2.putText(annotated_image, f"KOPS angle: {round(angle_result[5], 1)}", (10,6*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
-    annotated_image = cv2.putText(annotated_image, f"foot angle: {round(angle_result[6], 1)}", (10,7*spacing), fontFace=font, fontScale = fontScale, thickness = thickness, color = color)
-
-    return annotated_image
-
-
 def show_pedalstrokes(left_frame, right_frame, save=True):
-    top_stroke = mp.Image.create_from_file(left_frame)
-    landmarks_top = grab_landmarks(top_stroke)
-    angles_top = body_pose_angles(top_stroke)
-    annotated_image_top = draw_landmarks_on_image(top_stroke.numpy_view(), landmarks_top, angles_top)
-    rgb_image_top = cv2.cvtColor(annotated_image_top, cv2.COLOR_BGR2RGB)
-
-    bot_stroke = mp.Image.create_from_file(right_frame)
-    landmarks_bot = grab_landmarks(bot_stroke)
-    angles_bot = body_pose_angles(bot_stroke)
-    annotated_image_bot = draw_landmarks_on_image(bot_stroke.numpy_view(), landmarks_bot, angles_bot)
-    rgb_image_bot = cv2.cvtColor(annotated_image_bot, cv2.COLOR_BGR2RGB)
-    
+    rgb_image_top = cv2.imread(left_frame)
+    rgb_image_bot = cv2.imread(right_frame)
     image = np.concatenate((rgb_image_top, rgb_image_bot), axis=1)
     if save:
         dir_name = Path(left_frame).parent.parent
@@ -242,7 +239,7 @@ def visualize_angles(bikefit_angles, bike, save_dir):
     axs[0].set_ylim([0,1])
     axs[0].text(-0.01, .5, f"{left}°", horizontalalignment='right', verticalalignment='center', transform=axs[0].transAxes)
     axs[0].text( 1.01, .5, f"{right}°", horizontalalignment='left', verticalalignment='center', transform=axs[0].transAxes)
-    axs[0].text(.7, 1.115, f"{bikefit_angles[0]}°", fontsize=12, color=drawing_style.cmap_rgr(line/stepsize), horizontalalignment="left", verticalalignment="bottom", transform=axs[0].transAxes)
+    axs[0].text(.71, 1.22, f"{bikefit_angles[0]}°", fontsize=12, color=drawing_style.cmap_rgr(line/stepsize), horizontalalignment="left", verticalalignment="bottom", transform=axs[0].transAxes)
 
     ### Minimum Knee Angle
     axs[1].set_title("Minimum Knee Angle")
@@ -258,7 +255,7 @@ def visualize_angles(bikefit_angles, bike, save_dir):
     axs[1].set_ylim([0,1])
     axs[1].text(-0.01, .5, f"{left}°", horizontalalignment='right', verticalalignment='center', transform=axs[1].transAxes)
     axs[1].text( 1.01, .5, f"{right}°", horizontalalignment='left', verticalalignment='center', transform=axs[1].transAxes)
-    axs[1].text(.7, 1.115, f"{bikefit_angles[1]}°", fontsize=12, color=drawing_style.cmap_rgr(line/stepsize), horizontalalignment="left", verticalalignment="bottom", transform=axs[1].transAxes)
+    axs[1].text(.71, 1.22, f"{bikefit_angles[1]}°", fontsize=12, color=drawing_style.cmap_rgr(line/stepsize), horizontalalignment="left", verticalalignment="bottom", transform=axs[1].transAxes)
 
 
     ### Torso Angle
@@ -275,7 +272,7 @@ def visualize_angles(bikefit_angles, bike, save_dir):
     axs[2].set_ylim([0,1])
     axs[2].text(-0.01, .5, f"{left}°", horizontalalignment='right', verticalalignment='center', transform=axs[2].transAxes)
     axs[2].text( 1.01, .5, f"{right}°", horizontalalignment='left', verticalalignment='center', transform=axs[2].transAxes)
-    axs[2].text(.69, 1.12, f"{bikefit_angles[2]}°", fontsize=12, color=drawing_style.cmap_rgr(line/stepsize), horizontalalignment="left", verticalalignment="bottom", transform=axs[2].transAxes)
+    axs[2].text(.7, 1.22, f"{bikefit_angles[2]}°", fontsize=12, color=drawing_style.cmap_rgr(line/stepsize), horizontalalignment="left", verticalalignment="bottom", transform=axs[2].transAxes)
 
     ### Shoulder Angle
     axs[3].set_title("Average Shoulder Angle")
@@ -291,7 +288,7 @@ def visualize_angles(bikefit_angles, bike, save_dir):
     axs[3].set_ylim([0,1])
     axs[3].text(-0.01, .5, f"{left}°", horizontalalignment='right', verticalalignment='center', transform=axs[3].transAxes)
     axs[3].text( 1.01, .5, f"{right}°", horizontalalignment='left', verticalalignment='center', transform=axs[3].transAxes)
-    axs[3].text(.72, 1.115, f"{bikefit_angles[3]}°", fontsize=12, color=drawing_style.cmap_rgr(line/stepsize), horizontalalignment="left", verticalalignment="bottom", transform=axs[3].transAxes)
+    axs[3].text(.73, 1.22, f"{bikefit_angles[3]}°", fontsize=12, color=drawing_style.cmap_rgr(line/stepsize), horizontalalignment="left", verticalalignment="bottom", transform=axs[3].transAxes)
 
     ### Elbow Angle
     axs[4].set_title("Average Elbow Angle")
@@ -307,7 +304,7 @@ def visualize_angles(bikefit_angles, bike, save_dir):
     axs[4].set_ylim([0,1])
     axs[4].text(-0.01, .5, f"{left}°", horizontalalignment='right', verticalalignment='center', transform=axs[4].transAxes)
     axs[4].text( 1.01, .5, f"{right}°", horizontalalignment='left', verticalalignment='center', transform=axs[4].transAxes)
-    axs[4].text(.70, 1.115, f"{bikefit_angles[4]}°", fontsize=12, color=drawing_style.cmap_rgr(line/stepsize), horizontalalignment="left", verticalalignment="bottom", transform=axs[4].transAxes)
+    axs[4].text(.71, 1.22, f"{bikefit_angles[4]}°", fontsize=12, color=drawing_style.cmap_rgr(line/stepsize), horizontalalignment="left", verticalalignment="bottom", transform=axs[4].transAxes)
     
     plt.tight_layout()
     plt.savefig(os.path.join(save_dir, "measured_vs_recommended_angles.png"), dpi=300)
@@ -338,3 +335,4 @@ def bikefit_result(video, bike):
     print(f"Your average elbow angle is {angles[4]}.")
     print(f"The recommended range is {bike.elbow_angle_lower} to {bike.elbow_angle_upper}.")
     print("Shoulder and arm position can be changed by various handlebar/stem combinations. If your arm is too stretched, consider a shorter stem or one with a higher rise. In order to increase elbow angle, you can choose a longer stem or one with higher rise.")
+
