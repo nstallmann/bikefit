@@ -1,6 +1,8 @@
 ## Nick's Bikefit
 With this project, you can analyze your dynamic body position while riding a bike. Your body position is analyzed and adaptations to your bike geometry are recommended based on sports scientific research.
 
+![](https://github.com/nstallmann/bikefit/blob/main/example.gif)
+
 ## Requirements
 * python version: 3.11.8
 * see `requirements.txt` / `environment.yml`
