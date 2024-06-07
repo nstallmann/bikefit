@@ -18,4 +18,4 @@ You will need a video of yourself riding your bike on an indoor trainer. For mea
 ## How to Run
 * Open the file `bikefit.py` and enter the path to your video
 * Initialize a bike. You can choose between `RoadBike` and `MountainBike`. In case of `RoadBike`, choose a riding style by passing it as an argument. You can choose between `RidingStyle.CASUAL`, `RidingStyle.FITNESS` and `RidingStyle.RACING`. For `MountainBike`, no arguments are required.
-* Upon running, a folder with the video's stem name will be generated. In ot, you will find the files `bikefit_top_vs_bottom_stroke.jpg` and `measured_vs_recommended_angles.png` showing your body position on the bike and how the measured angles are lying in the recommended range.
+* Upon running, a folder with the video's stem name will be generated. In it, you will find the files `bikefit_top_vs_bottom_stroke.jpg` and `measured_vs_recommended_angles.png` showing your body position on the bike and where the measured angles are lying in the recommended range.
