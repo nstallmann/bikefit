@@ -7,23 +7,18 @@ from mediapipe.python.solutions.drawing_utils import DrawingSpec
 from mediapipe.python.solutions.pose import PoseLandmark
 import matplotlib.colors
 
-
-cmap_rgr = matplotlib.colors.LinearSegmentedColormap.from_list("",
-            ["red", "yellow", "green", "green", "yellow","red"])
-cmap_rg = matplotlib.colors.LinearSegmentedColormap.from_list("",
-            ["red", "orange", "yellow", "green", "green"])
-
 _RADIUS = 5
 _RED = (48, 48, 255)
 _GREEN = (48, 255, 48)
 _BLUE = (192, 101, 21)
+_ORANGE = (255, 127, 14)
 _YELLOW = (0, 204, 255)
-_GRAY = (128, 128, 128)
-_PURPLE = (128, 64, 128)
-_PEACH = (180, 229, 255)
-_WHITE = (224, 224, 224)
-_CYAN = (192, 255, 48)
-_MAGENTA = (192, 48, 255)
+
+CMAP_RGR = matplotlib.colors.LinearSegmentedColormap.from_list("",
+                                                               [_RED, _YELLOW, _GREEN, _GREEN, _YELLOW, _RED])
+CMAP_RG = matplotlib.colors.LinearSegmentedColormap.from_list("",
+                                                              [_RED, _ORANGE, _YELLOW, _GREEN, _GREEN])
+
 
 _THICKNESS_POSE_LANDMARKS = 8
 _POSE_LANDMARKS = frozenset([
@@ -43,6 +38,7 @@ _POSE_LANDMARKS = frozenset([
     PoseLandmark.RIGHT_FOOT_INDEX
 ])
 
+
 def get_pose_landmarks_style() -> Mapping[int, DrawingSpec]:
     """Returns the default pose landmarks drawing style.
     
@@ -53,7 +49,7 @@ def get_pose_landmarks_style() -> Mapping[int, DrawingSpec]:
     pose_spec = DrawingSpec(
         color=_BLUE, thickness=_THICKNESS_POSE_LANDMARKS)
     for landmark in _POSE_LANDMARKS:
-      pose_landmark_style[landmark] = pose_spec
+        pose_landmark_style[landmark] = pose_spec
     pose_landmark_style[PoseLandmark.NOSE] = DrawingSpec(
         color=_BLUE, thickness=_THICKNESS_POSE_LANDMARKS)
     return pose_landmark_style
