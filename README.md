@@ -3,7 +3,7 @@
 Analyze your dynamic body position while riding a bike and get recommendations for adapting your bike geometry based on 
 sports scientific research.
 
-<img src="https://github.com/nstallmann/bikefit/blob/main/example.gif" height="280" /> <img src="https://github.com/nstallmann/bikefit/blob/main/example/measured_vs_recommended_angles.png" height="280" />
+<img src="https://github.com/nstallmann/bikefit/blob/main/example/example.gif" height="280" /> <img src="https://github.com/nstallmann/bikefit/blob/main/example/measured_vs_recommended_angles.png" height="280" />
 
 ## Requirements
 
