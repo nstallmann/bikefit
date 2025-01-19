@@ -40,7 +40,8 @@ following guidelines:
      - Initialize a `MountainBike` object. No additional arguments are required.
 
 4. **Run the Script:**
-   - Upon running, a folder with the video's stem name will be generated.
+   - Upon running, an output folder will be generated. Each time the code is run, a new folder is created for that
+     run, e.g. `output/run1`.
    - Inside, you will find two files:
      - `bikefit_top_vs_bottom_stroke.jpg`: Shows your body position on the bike.
      - `measured_vs_recommended_angles.png`: Shows your measured angles within the recommended range.
