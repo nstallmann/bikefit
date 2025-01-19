@@ -28,8 +28,8 @@ following guidelines:
    - Note the path to your video file.
 
 2. **Initialize the Script:**
-   - Open the file `bikefit.py`.
-   - Enter the path to your video file.
+   - Open the file `main.py`.
+   - Change the path to your video file in the `constants.py` file in folder Constants.
 
 3. **Choose Your Bike Type:**
    - **Road Bike:**
