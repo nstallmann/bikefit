@@ -3,3 +3,5 @@
 /src/tmp_main.py
 /input/
 /output/
+/.idea
+**/__pycache__/

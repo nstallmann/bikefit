@@ -5,20 +5,29 @@ from mediapipe.python.solutions.pose import PoseLandmark
 
 
 class PathConstants:
+
     BASE_PATH = os.getcwd()
     ROOT_DIR_PATH = os.path.dirname(BASE_PATH)
 
-    MODEL_DIR_NAME = "models"
-    INPUT_DIR_NAME = "input"
+    _MODEL_DIR_NAME = "models"
+    _INPUT_DIR_NAME = "input"
+    OUTPUT_DIR_NAME = "output"
+    RUN_DIR_BASE_NAME = "run"
+    FRAMES_DIR_NAME = ".frames"
+    FRAME_FILE_NAME = "frame{:04d}.jpg"
 
-    INPUT_FILE_NAME = "example.mp4"
-    MODEL_FILE_NAME = "pose_landmarker_heavy.task"
+    _INPUT_FILE_NAME = "example.mp4"
+    _MODEL_FILE_NAME = "pose_landmarker_heavy.task"
+    TOP_BOT_PEDAL_STROKE_FILE_NAME = "bikefit_top_vs_bottom_stroke.jpg"
+    MEASURED_VS_RECOMMENDED_ANGLES_FILE_NAME = "measured_vs_recommended_angles.png"
 
-    INPUT_DIR_PATH = os.path.join(ROOT_DIR_PATH, INPUT_DIR_NAME)
-    MODEL_DIR_PATH = os.path.join(ROOT_DIR_PATH, MODEL_DIR_NAME)
+    INPUT_DIR_PATH = os.path.join(ROOT_DIR_PATH, _INPUT_DIR_NAME)
+    OUTPUT_DIR_PATH = os.path.join(ROOT_DIR_PATH, OUTPUT_DIR_NAME)
+    MODEL_DIR_PATH = os.path.join(ROOT_DIR_PATH, _MODEL_DIR_NAME)
 
-    MODEL_FILE_PATH = os.path.join(MODEL_DIR_PATH, MODEL_FILE_NAME)
-    INPUT_FILE_PATH = os.path.join(INPUT_DIR_PATH, INPUT_FILE_NAME)
+    MODEL_FILE_PATH = os.path.join(MODEL_DIR_PATH, _MODEL_FILE_NAME)
+    INPUT_FILE_PATH = os.path.join(INPUT_DIR_PATH, _INPUT_FILE_NAME)
+
 
 class LeftBodyLandmarks(enum.IntEnum):
     ELBOW = PoseLandmark.LEFT_ELBOW
@@ -29,7 +38,8 @@ class LeftBodyLandmarks(enum.IntEnum):
     KNEE = PoseLandmark.LEFT_KNEE
     FOOT = PoseLandmark.LEFT_FOOT_INDEX
     HIP = PoseLandmark.LEFT_HIP
-    
+
+
 class RightBodyLandmarks(enum.IntEnum):
     ELBOW = PoseLandmark.RIGHT_ELBOW
     SHOULDER = PoseLandmark.RIGHT_SHOULDER
