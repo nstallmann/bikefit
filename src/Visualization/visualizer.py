@@ -120,10 +120,10 @@ class Visualizer:
         plt.text(
             x=10,
             y=10,
-            s=f"knee angle: {round(self.body_angles.knee_angle, 1)}\n"
-            f"torso angle: {round(self.body_angles.torso_angle, 1)}\n"
-            f"shoulder angle:{round(self.body_angles.shoulder_angle, 1)}\n"
-            f"elbow angle:{round(self.body_angles.elbow_angle, 1)}\n",
+            s=f"knee angle: {round(self.body_angles.knee_angle, 1)}°\n"
+            f"torso angle: {round(self.body_angles.torso_angle, 1)}°\n"
+            f"shoulder angle:{round(self.body_angles.shoulder_angle, 1)}°\n"
+            f"elbow angle:{round(self.body_angles.elbow_angle, 1)}°\n",
             fontsize=DrawingStyles.PLT_FONT_SIZE,
             ha="left",
             va="top",
