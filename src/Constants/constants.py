@@ -1,7 +1,24 @@
 import enum
+import os
 
 from mediapipe.python.solutions.pose import PoseLandmark
 
+
+class PathConstants:
+    BASE_PATH = os.getcwd()
+    ROOT_DIR_PATH = os.path.dirname(BASE_PATH)
+
+    MODEL_DIR_NAME = "models"
+    INPUT_DIR_NAME = "input"
+
+    INPUT_FILE_NAME = "example.mp4"
+    MODEL_FILE_NAME = "pose_landmarker_heavy.task"
+
+    INPUT_DIR_PATH = os.path.join(ROOT_DIR_PATH, INPUT_DIR_NAME)
+    MODEL_DIR_PATH = os.path.join(ROOT_DIR_PATH, MODEL_DIR_NAME)
+
+    MODEL_FILE_PATH = os.path.join(MODEL_DIR_PATH, MODEL_FILE_NAME)
+    INPUT_FILE_PATH = os.path.join(INPUT_DIR_PATH, INPUT_FILE_NAME)
 
 class LeftBodyLandmarks(enum.IntEnum):
     ELBOW = PoseLandmark.LEFT_ELBOW
