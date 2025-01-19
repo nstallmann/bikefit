@@ -2,5 +2,8 @@ name: bikefit-env
 channels:
   - defaults
 dependencies:
-  - absl-py==2.1.0
-prefix: /home/nick/anaconda3/envs/bikefit-env
+  - opencv-python==4.10.0.84
+  - mediapipe==0.10.20
+  - numpy
+  - matplotlib
+

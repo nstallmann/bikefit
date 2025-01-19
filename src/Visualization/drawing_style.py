@@ -1,55 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from typing import Mapping
-
-from mediapipe.python.solutions.drawing_utils import DrawingSpec
-from mediapipe.python.solutions.pose import PoseLandmark
-import matplotlib.colors
-
-_RADIUS = 5
-_RED = (48, 48, 255)
-_GREEN = (48, 255, 48)
-_BLUE = (192, 101, 21)
-_ORANGE = (255, 127, 14)
-_YELLOW = (0, 204, 255)
-
-CMAP_RGR = matplotlib.colors.LinearSegmentedColormap.from_list("",
-                                                               [_RED, _YELLOW, _GREEN, _GREEN, _YELLOW, _RED])
-CMAP_RG = matplotlib.colors.LinearSegmentedColormap.from_list("",
-                                                              [_RED, _ORANGE, _YELLOW, _GREEN, _GREEN])
+import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
 
 
-_THICKNESS_POSE_LANDMARKS = 8
-_POSE_LANDMARKS = frozenset([
-    PoseLandmark.LEFT_EYE_INNER, PoseLandmark.LEFT_EYE,
-    PoseLandmark.LEFT_EYE_OUTER, PoseLandmark.LEFT_EAR, PoseLandmark.MOUTH_LEFT,
-    PoseLandmark.LEFT_SHOULDER, PoseLandmark.LEFT_ELBOW,
-    PoseLandmark.LEFT_WRIST, PoseLandmark.LEFT_PINKY, PoseLandmark.LEFT_INDEX,
-    PoseLandmark.LEFT_THUMB, PoseLandmark.LEFT_HIP, PoseLandmark.LEFT_KNEE,
-    PoseLandmark.LEFT_ANKLE, PoseLandmark.LEFT_HEEL,
-    PoseLandmark.LEFT_FOOT_INDEX, PoseLandmark.RIGHT_EYE_INNER, PoseLandmark.RIGHT_EYE,
-    PoseLandmark.RIGHT_EYE_OUTER, PoseLandmark.RIGHT_EAR,
-    PoseLandmark.MOUTH_RIGHT, PoseLandmark.RIGHT_SHOULDER,
-    PoseLandmark.RIGHT_ELBOW, PoseLandmark.RIGHT_WRIST,
-    PoseLandmark.RIGHT_PINKY, PoseLandmark.RIGHT_INDEX,
-    PoseLandmark.RIGHT_THUMB, PoseLandmark.RIGHT_HIP, PoseLandmark.RIGHT_KNEE,
-    PoseLandmark.RIGHT_ANKLE, PoseLandmark.RIGHT_HEEL,
-    PoseLandmark.RIGHT_FOOT_INDEX
-])
+class ColorStyles:
+    _RED = tuple(np.array([255, 48, 48]) / 255)
+    _GREEN = tuple(np.array([48, 255, 48]) / 255)
+    _BLUE = tuple(np.array([21, 101, 192]) / 255)
+    _ORANGE = tuple(np.array([255, 127, 14]) / 255)
+    _YELLOW = tuple(np.array([255, 204, 0]) / 255)
+
+    CMAP_RGR = LinearSegmentedColormap.from_list("rgr", [_RED, _YELLOW, _GREEN, _GREEN, _YELLOW, _RED])
+    CMAP_RG = LinearSegmentedColormap.from_list("rgg", [_RED, _ORANGE, _YELLOW, _GREEN, _GREEN])
+    GRADIENT_STEP_SIZE = 100
+
+    PLT_LINE_COLOR = (1, 1, 1)
+    PLT_POINT_COLOR = _ORANGE
+    PLT_TITLE_MAIN_COLOR = (0, 0, 0)
 
 
-def get_pose_landmarks_style() -> Mapping[int, DrawingSpec]:
-    """Returns the default pose landmarks drawing style.
-    
-    Returns:
-        A mapping from each pose landmark to its drawing spec.
-    """
-    pose_landmark_style = {}
-    pose_spec = DrawingSpec(
-        color=_BLUE, thickness=_THICKNESS_POSE_LANDMARKS)
-    for landmark in _POSE_LANDMARKS:
-        pose_landmark_style[landmark] = pose_spec
-    pose_landmark_style[PoseLandmark.NOSE] = DrawingSpec(
-        color=_BLUE, thickness=_THICKNESS_POSE_LANDMARKS)
-    return pose_landmark_style
+class DrawingStyles:
+    THICKNESS_POSE_LANDMARKS = 100
+    THICKNESS_LINES = 2
+    THICKNESS_POINT_BORDER = 1
+    Z_ORDER_LINES = 1
+    Z_ORDER_POINTS = 2
+    PLT_FONT_SIZE = 13
