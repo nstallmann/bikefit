@@ -43,7 +43,7 @@ class FrameEvaluator:
         hip2knee = self._normalize(body_position.knee_position_px - body_position.hip_position_px)
         knee2ankle = self._normalize(body_position.ankle_position_px - body_position.knee_position_px)
         hip2shoulder = self._normalize(body_position.shoulder_position_px - body_position.hip_position_px)
-        shoulder2elbow = self._normalize(body_position.elbow_position_px - body_position.shoulder_position_px)
+        elbow2shoulder = self._normalize(body_position.shoulder_position_px - body_position.elbow_position_px)
         elbow2wrist = self._normalize(body_position.wrist_position_px - body_position.elbow_position_px)
         horizontal_line = np.array([1, 0])
         if self.left_side_front:
@@ -52,8 +52,8 @@ class FrameEvaluator:
         return BodyAngles(
             knee_angle=180 - self._angle_between_vectors(hip2knee, knee2ankle),
             hip_angle=self._angle_between_vectors(hip2knee, hip2shoulder),
-            elbow_angle=self._angle_between_vectors(shoulder2elbow, elbow2wrist),
-            shoulder_angle=self._angle_between_vectors(hip2shoulder, shoulder2elbow),
+            elbow_angle=self._angle_between_vectors(elbow2shoulder, elbow2wrist),
+            shoulder_angle=self._angle_between_vectors(hip2shoulder, elbow2shoulder),
             torso_angle=self._angle_between_vectors(hip2shoulder, horizontal_line),
         )
 
